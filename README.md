@@ -1,6 +1,6 @@
 # Cosse
 
-Cosse is a lightweight low level Android library for Server Side-Events (SSE). Cosse is written in Kotlin and takes advantage of Kotlin's coroutines by starting a coroutine everytime a new message is recieved. For custom functionality upon message receipt inside the coroutine, this project should be forked and adapted to suit your needs.
+Cosse is a lightweight low level Android library for Server Side-Events (SSE). Cosse is written in Kotlin and takes advantage of Kotlin's coroutines by starting a coroutine everytime a new message is recieved. For custom functionality upon message receipt inside the coroutine, this project should be forked and adapted to suit the project's needs.
 
 ## Getting Started
 
