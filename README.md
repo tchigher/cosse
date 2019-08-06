@@ -46,29 +46,29 @@ request.headers.put("Authorization", "123345679")
 Assign the callback
 
 ```
-            val test = SseClient(request, object : SseListener {
-                override fun onOpen(response: HttpResponse) {
-                    Log.i(TAG, response.headers)
-                }
+val test = SseClient(request, object : SseListener {
+    override fun onOpen(response: HttpResponse) {
+        Log.i(TAG, response.headers)
+    }
 
-                override fun onMessage(line: String) {
-                    Log.i(TAG, line)
-                }
+    override fun onMessage(line: String) {
+        Log.i(TAG, line)
+    }
 
-                override fun onTimeout() {
-                    Log.i(TAG, "SSE Timed out")
-                }
+    override fun onTimeout() {
+        Log.i(TAG, "SSE Timed out")
+    }
 
-                override fun onError(status: Int) {
-                    Log.i(TAG, "Error response code: " + status);
-                }
+    override fun onError(status: Int) {
+        Log.i(TAG, "Error response code: " + status);
+    }
 
-                override fun onClose() {
-                    Log.i(TAG, "SSE Closed")
-                }
-            })
+    override fun onClose() {
+        Log.i(TAG, "SSE Closed")
+    }
+});
 
-            test.execute()
+test.execute()
 ```
 
 #### Close
@@ -88,34 +88,34 @@ Map<String, String> headers = new HashMap<>();
 headers.put("Authorization", "12345678");
 request.setHeaders(headers);
 
-	SseClient test = new SseClient(request, new SseListener() {
-            @Override
-            public void onOpen(@NotNull HttpResponse httpResponse) {
-                
-            }
+SseClient test = new SseClient(request, new SseListener() {
+    @Override
+    public void onOpen(@NotNull HttpResponse httpResponse) {
 
-            @Override
-            public void onMessage(@NotNull String s) {
+    }
 
-            }
+    @Override
+    public void onMessage(@NotNull String s) {
 
-            @Override
-            public void onTimeout() {
+    }
 
-            }
+    @Override
+    public void onTimeout() {
 
-            @Override
-            public void onError(int i) {
+    }
 
-            }
+    @Override
+    public void onError(int i) {
 
-            @Override
-            public void onClose() {
+    }
 
-            }
-        });
-        
-	test.execute();
+    @Override
+    public void onClose() {
+
+    }
+});
+
+test.execute();
 ```
 
 ## License
