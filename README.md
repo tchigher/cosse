@@ -83,11 +83,12 @@ test.close()
 
 ```
 HttpRequest request = new HttpRequest("https://myurl.com", 40000);
-        Map<String, String> headers = new HashMap<>();
-        headers.put("Authorization", "12345678");
-        request.setHeaders(headers);
 
-        SseClient test = new SseClient(request, new SseListener() {
+Map<String, String> headers = new HashMap<>();
+headers.put("Authorization", "12345678");
+request.setHeaders(headers);
+
+	SseClient test = new SseClient(request, new SseListener() {
             @Override
             public void onOpen(@NotNull HttpResponse httpResponse) {
                 
@@ -114,7 +115,7 @@ HttpRequest request = new HttpRequest("https://myurl.com", 40000);
             }
         });
         
-        test.execute();
+	test.execute();
 ```
 
 ## License
