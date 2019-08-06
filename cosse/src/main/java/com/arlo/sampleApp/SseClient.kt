@@ -29,7 +29,7 @@ class SseClient(val request: HttpRequest, val listener: SseListener) {
         Log.d(TAG, "!!!!!! Stream connection was forced to disconnect");
     }
 
-    fun test(): Unit {
+    fun execute(): Unit {
 
         GlobalScope.launch {
             Log.i(TAG, "coroutine starts")
@@ -80,25 +80,20 @@ class SseClient(val request: HttpRequest, val listener: SseListener) {
         responseHeaders.forEach {
             if (it.key != null && it.value != null) {
                 response.headers.put(it.key, it.value.iterator().next())
-                Log.d(TAG, "Response Headers: ${it.key}, Value: ${it.value.iterator().next()}")
+//                Log.d(TAG, "Response Headers: ${it.key}, Value: ${it.value.iterator().next()}")
             }
         }
 
     }
 
-    //start the channel
     fun openChannel(): Int {
 
-        //no checked exceptions??
         val url = URL(request.url)
-
-        Log.i(TAG, "Starting connection")
+        val headers = request.headers
 
         urlConnection = url.openConnection() as HttpsURLConnection
         urlConnection.sslSocketFactory = TLSSocketFactory()
         urlConnection.requestMethod = request.requestMethod.toString()
-
-        val headers = request.headers
 
         headers.forEach {
             urlConnection.setRequestProperty(it.key, it.value)
@@ -108,22 +103,7 @@ class SseClient(val request: HttpRequest, val listener: SseListener) {
         urlConnection.useCaches = false
         urlConnection.connectTimeout = request.connectTimeout
 
-        Log.d(
-            TAG, "httpConnection:" + url.toString() +
-                    " Method:" + urlConnection.getRequestMethod() +
-                    " DoInput:" + urlConnection.getDoInput() +
-                    " DoOutput:" + urlConnection.getDoOutput() +
-                    " UseCaches:" + urlConnection.getUseCaches() +
-                    " Connect Timeout:" + urlConnection.getConnectTimeout() +
-                    " Read Timeout:" + urlConnection.getReadTimeout()
-        )
-
         val properties = urlConnection.getRequestProperties()
-
-        properties.forEach {
-            Log.d(TAG, "Request Property: ${it.key}, Value: ${it.value}")
-        }
-
         urlConnection.connect()
 
         return urlConnection.responseCode

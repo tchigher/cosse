@@ -15,14 +15,13 @@ class MainActivity : AppCompatActivity() {
 
         button_start.setOnClickListener {
 
-            val request = HttpRequest("https://mydev3.arlo.com/hmsweb/client/subscribe/", 40000)
+            val request = HttpRequest("https://myurl.com", 40000)
 
             //example of added header
-            request.headers.put("Authorization", "2_57a1gozMkqXeebXgbfuQH7M_f22BDIIOkOTyY6YzdZXT0s_zowbFF422clS19vjyYxycnbkzqu-uh2Wqg76M2A3UKt-Hl42CqRfJkpA3w_O5ZAsGub2aLR-_C-RDFoUIhQeHWYZ0qI7FVOq-cQKCiHTC_FB4zhDBfJtiO7FnhxZ1")
+            request.headers.put("Authorization", "1234456")
 
             val test = SseClient(request, object : SseListener {
                 override fun onOpen(response: HttpResponse) {
-                    //log error codes here.
                     text_status.setText("We connected!")
                 }
 
