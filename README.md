@@ -12,6 +12,17 @@ dependencies {
 }
 ```
 
+Add in your root build.gradle:
+
+```
+allprojects {
+	repositories {
+		...
+		maven { url 'https://jitpack.io' }
+	}
+}
+```
+
 ### Usage
 
 #### Request
