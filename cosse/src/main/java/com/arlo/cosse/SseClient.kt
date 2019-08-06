@@ -15,12 +15,21 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License. */
 
+import android.util.Log
 import kotlinx.coroutines.*
+import org.jetbrains.annotations.NotNull
+import org.json.JSONObject
 import java.io.BufferedReader
+import java.io.IOException
 import java.io.InputStreamReader
 import java.net.HttpURLConnection
 import javax.net.ssl.HttpsURLConnection
 import java.net.URL
+import java.security.KeyManagementException
+import java.security.NoSuchAlgorithmException
+import java.util.regex.Pattern
+import javax.net.ssl.SSLException
+import kotlin.system.exitProcess
 
 class SseClient(val request: HttpRequest, val listener: SseListener) {
 
@@ -34,15 +43,22 @@ class SseClient(val request: HttpRequest, val listener: SseListener) {
     }
 
     fun closeChannel() {
-        connectionStatus = false;
-        urlConnection.setConnectTimeout(2);
-        urlConnection.setReadTimeout(2);
-        urlConnection.disconnect();
-        listener.onClose()
+        try {
+            connectionStatus = false;
+            urlConnection.setConnectTimeout(2);
+            urlConnection.setReadTimeout(2);
+            urlConnection.disconnect();
+            listener.onClose()
+            exitProcess(1)
+        }
+        catch (e: Throwable){
+            e.printStackTrace()
+        }
     }
 
     fun execute(): Unit {
 
+        //check internet connection:
         GlobalScope.launch {
 
             val status = GlobalScope.async {  openChannel() }.await()
@@ -55,18 +71,28 @@ class SseClient(val request: HttpRequest, val listener: SseListener) {
                     listener.onOpen(response)
                 }
 
-                while (connectionStatus) {
+                if (!request.channelTimeout.equals(-999)) {
+                    launch {
+                        delay(request.channelTimeout)
+                        connectionStatus = false
+                        listener.onTimeout()
+                        closeChannel()
+                    }
+                }
 
+                while (connectionStatus) {
                     val message = GlobalScope.async { reader() }.await()
+                    val json = jsonParser(message)
 
                     launch(Dispatchers.Main) {
-                        listener.onMessage(message)
+                        listener.onMessage(message, json)
                     }
                 }
 
                 if (!connectionStatus) {
-                    listener.onTimeout()
+                    closeChannel()
                 }
+
             }
             else {
                 connectionStatus = false;
@@ -96,8 +122,17 @@ class SseClient(val request: HttpRequest, val listener: SseListener) {
         val url = URL(request.url)
         val headers = request.headers
 
+
         urlConnection = url.openConnection() as HttpsURLConnection
-        urlConnection.sslSocketFactory = TLSSocketFactory()
+        try {
+            urlConnection.sslSocketFactory = TLSSocketFactory()
+        }
+        catch (e1: KeyManagementException){
+            e1.printStackTrace()
+        }
+        catch (e2: NoSuchAlgorithmException){
+            e2.printStackTrace()
+        }
         urlConnection.requestMethod = request.requestMethod.toString()
 
         headers.forEach {
@@ -108,10 +143,20 @@ class SseClient(val request: HttpRequest, val listener: SseListener) {
         urlConnection.useCaches = false
         urlConnection.connectTimeout = request.connectTimeout
 
-        val properties = urlConnection.getRequestProperties()
         urlConnection.connect()
 
-        return urlConnection.responseCode
+        try {
+            val status = urlConnection.responseCode
+            return status
+        }
+        catch (s: SSLException) {
+            s.printStackTrace()
+        }
+        catch (e: IOException) {
+            e.printStackTrace()
+        }
+
+        return -99
     }
 
     fun reader() : String{
@@ -120,11 +165,29 @@ class SseClient(val request: HttpRequest, val listener: SseListener) {
         val sb = StringBuilder(5000)
         var line: String? = null
 
-        while ({ line = br.readLine(); line }() != null && line!!.isNotBlank()) {
-            sb.append(line + "\n")
+        try {
+            while ({ line = br.readLine(); line }() != null && line!!.isNotBlank()) {
+                sb.append(line + "\n")
+            }
+        }
+        catch (e: IOException) {
+            e.printStackTrace()
         }
 
         return sb.toString()
+    }
+
+    fun jsonParser(message: String): JSONObject{
+        val pattern = Pattern.compile("\\{(.*?)\\}")
+        val matcher = pattern.matcher(message)
+        val jsonObject = JSONObject("{}")
+        if (matcher.find()) {
+            if (matcher.group(1) != null) {
+                val json = matcher.group(1);
+                return JSONObject(json);
+            }
+        }
+        return jsonObject
     }
 
 }

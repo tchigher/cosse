@@ -1,9 +1,15 @@
 package com.arlo.cosse
 
-open class HttpRequest(val url: String, var connectTimeout: Int) {
+open class HttpRequest(val url: String) {
 
     var headers: MutableMap<String,String>
     val requestMethod: RequestMethod
+    val connectTimeout: Int
+    var channelTimeout: Long
+
+    constructor(url:String, _channelTimeout: Long):this(url) {
+        this.channelTimeout = _channelTimeout
+    }
 
     init {
         headers = mutableMapOf()
@@ -13,7 +19,8 @@ open class HttpRequest(val url: String, var connectTimeout: Int) {
         headers.put("Accept", "text/event-stream")
         headers.put("Cache-Control", "no-cache")
 
-        connectTimeout = 40000
+        connectTimeout = 10000
+        channelTimeout = -999
         requestMethod = RequestMethod.GET
     }
 
