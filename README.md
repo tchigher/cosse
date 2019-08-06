@@ -79,6 +79,44 @@ You should close the channel if it is no longer in use.
 test.close()
 ```
 
+### Java Usage
+
+```
+HttpRequest request = new HttpRequest("https://myurl.com", 40000);
+        Map<String, String> headers = new HashMap<>();
+        headers.put("Authorization", "12345678");
+        request.setHeaders(headers);
+
+        SseClient test = new SseClient(request, new SseListener() {
+            @Override
+            public void onOpen(@NotNull HttpResponse httpResponse) {
+                
+            }
+
+            @Override
+            public void onMessage(@NotNull String s) {
+
+            }
+
+            @Override
+            public void onTimeout() {
+
+            }
+
+            @Override
+            public void onError(int i) {
+
+            }
+
+            @Override
+            public void onClose() {
+
+            }
+        });
+        
+        test.execute();
+```
+
 ## License
 
 Copyright 2019 Evan Smith
