@@ -27,9 +27,10 @@ allprojects {
 
 #### Request
 
-Create your request by setting URL and connect timeout
+Create your request by setting URL and channel timeout. The channel timeout is triggered after the provided amount of time and will close the channel after it is triggered. Note, the channel timeout is different from HttpUrlConnection's connect timeout which is a timeout triggered based on the length of time it takes to establish the connection.
 
 ```
+//This sets the request with a channel timeout of 10 minutes
 val request = HttpRequest("https://myurl.com", 40000)
 ```
 
