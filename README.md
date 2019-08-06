@@ -33,6 +33,11 @@ Create your request by setting URL and channel timeout. The channel timeout is t
 //This sets the request with a channel timeout of 10 minutes
 val request = HttpRequest("https://myurl.com", 600000)
 ```
+The channel timeout can also be omitted if this is only being handled server side:
+
+```
+val request = HttpRequest("https://myurl.com")
+```
 
 #### Headers
 
