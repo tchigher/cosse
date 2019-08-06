@@ -1,4 +1,4 @@
-package com.arlo.sampleApp
+package com.arlo.cosse
 
 import java.io.IOException
 import java.net.InetAddress

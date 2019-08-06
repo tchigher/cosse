@@ -1,4 +1,4 @@
-package com.arlo.sampleApp
+package com.arlo.cosse
 
 /*
 Copyright 2019 Evan Smith
@@ -15,7 +15,6 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License. */
 
-import android.util.Log
 import kotlinx.coroutines.*
 import java.io.BufferedReader
 import java.io.InputStreamReader
@@ -47,7 +46,6 @@ class SseClient(val request: HttpRequest, val listener: SseListener) {
         GlobalScope.launch {
 
             val status = GlobalScope.async {  openChannel() }.await()
-            Log.i(TAG, status.toString())
 
             if (status == HttpURLConnection.HTTP_OK) {
                 connectionStatus = true
@@ -60,7 +58,6 @@ class SseClient(val request: HttpRequest, val listener: SseListener) {
                 while (connectionStatus) {
 
                     val message = GlobalScope.async { reader() }.await()
-                    Log.i(TAG, message)
 
                     launch(Dispatchers.Main) {
                         listener.onMessage(message)

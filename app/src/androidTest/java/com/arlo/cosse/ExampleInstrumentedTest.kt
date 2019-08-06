@@ -1,4 +1,4 @@
-package com.arlo.sampleApp
+package com.arlo.cosse
 
 import androidx.test.InstrumentationRegistry
 import androidx.test.runner.AndroidJUnit4

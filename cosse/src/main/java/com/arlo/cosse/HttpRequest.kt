@@ -1,4 +1,4 @@
-package com.arlo.sampleApp
+package com.arlo.cosse
 
 open class HttpRequest(val url: String, var connectTimeout: Int) {
 

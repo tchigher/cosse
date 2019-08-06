@@ -1,4 +1,4 @@
-package com.arlo.sampleApp;
+package com.arlo.cosse;
 
 import android.content.Context;
 import androidx.test.InstrumentationRegistry;
