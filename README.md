@@ -1,6 +1,6 @@
 # Cosse
 
-Cosse is an Android library for Server Side-Events (SSE). Cosse is written in Kotlin and takes advantage of Kotlin's coroutines by starting a coroutine everytime a new message is recieved. For custom functionality upon message receipt inside the coroutine, this project should be forked and adapted to suit your needs. It is a lightweight library.
+Cosse is a lightweight low level Android library for Server Side-Events (SSE). Cosse is written in Kotlin and takes advantage of Kotlin's coroutines by starting a coroutine everytime a new message is recieved. For custom functionality upon message receipt inside the coroutine, this project should be forked and adapted to suit the project's needs.
 
 ## Getting Started
 
@@ -8,7 +8,18 @@ Add the following line to your gradle file:
 
 ```
 dependencies {
-    compile 'com.cosse.charmas3r.xxx'
+    implementation 'com.github.charmas3r:Cosse:v0.8-alpha'
+}
+```
+
+Add in your root build.gradle:
+
+```
+allprojects {
+	repositories {
+		...
+		maven { url 'https://jitpack.io' }
+	}
 }
 ```
 
@@ -66,6 +77,45 @@ You should close the channel if it is no longer in use.
 
 ```
 test.close()
+```
+
+### Java Usage
+
+```
+HttpRequest request = new HttpRequest("https://myurl.com", 40000);
+
+Map<String, String> headers = new HashMap<>();
+headers.put("Authorization", "12345678");
+request.setHeaders(headers);
+
+	SseClient test = new SseClient(request, new SseListener() {
+            @Override
+            public void onOpen(@NotNull HttpResponse httpResponse) {
+                
+            }
+
+            @Override
+            public void onMessage(@NotNull String s) {
+
+            }
+
+            @Override
+            public void onTimeout() {
+
+            }
+
+            @Override
+            public void onError(int i) {
+
+            }
+
+            @Override
+            public void onClose() {
+
+            }
+        });
+        
+	test.execute();
 ```
 
 ## License
