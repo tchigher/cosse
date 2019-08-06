@@ -8,7 +8,7 @@ Add the following line to your gradle file:
 
 ```
 dependencies {
-    implementation 'com.github.charmas3r:Cosse:v0.8-alpha'
+    implementation 'com.github.charmas3r:cosse:v0.8.2-alpha'
 }
 ```
 
