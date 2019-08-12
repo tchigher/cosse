@@ -18,7 +18,6 @@ open class HttpRequest(val url: String) {
         headers.put("Accept-Encoding", "")
         headers.put("Accept", "text/event-stream")
         headers.put("Cache-Control", "no-cache")
-
         connectTimeout = 10000
         channelTimeout = -999
         requestMethod = RequestMethod.GET

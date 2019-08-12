@@ -15,9 +15,7 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License. */
 
-import android.util.Log
 import kotlinx.coroutines.*
-import org.jetbrains.annotations.NotNull
 import org.json.JSONObject
 import java.io.BufferedReader
 import java.io.IOException
@@ -57,20 +55,14 @@ class SseClient(val request: HttpRequest, val listener: SseListener) {
     }
 
     fun execute(): Unit {
-
-        //check internet connection:
         GlobalScope.launch {
-
             val status = GlobalScope.async {  openChannel() }.await()
-
             if (status == HttpURLConnection.HTTP_OK) {
                 connectionStatus = true
                 buildResponse()
-
                 launch (Dispatchers.Main) {
                     listener.onOpen(response)
                 }
-
                 if (!request.channelTimeout.equals(-999)) {
                     launch {
                         delay(request.channelTimeout)
@@ -79,20 +71,16 @@ class SseClient(val request: HttpRequest, val listener: SseListener) {
                         closeChannel()
                     }
                 }
-
                 while (connectionStatus) {
                     val message = GlobalScope.async { reader() }.await()
                     val json = jsonParser(message)
-
                     launch(Dispatchers.Main) {
                         listener.onMessage(message, json)
                     }
                 }
-
                 if (!connectionStatus) {
                     closeChannel()
                 }
-
             }
             else {
                 connectionStatus = false;
@@ -107,7 +95,6 @@ class SseClient(val request: HttpRequest, val listener: SseListener) {
         response.responseCode = urlConnection.responseCode
         response.body = urlConnection.responseMessage
         val responseHeaders = urlConnection.headerFields
-
         responseHeaders.forEach {
             if (it.key != null && it.value != null) {
                 response.headers.put(it.key, it.value.iterator().next())
@@ -118,11 +105,8 @@ class SseClient(val request: HttpRequest, val listener: SseListener) {
     }
 
     fun openChannel(): Int {
-
         val url = URL(request.url)
         val headers = request.headers
-
-
         urlConnection = url.openConnection() as HttpsURLConnection
         try {
             urlConnection.sslSocketFactory = TLSSocketFactory()
@@ -134,15 +118,12 @@ class SseClient(val request: HttpRequest, val listener: SseListener) {
             e2.printStackTrace()
         }
         urlConnection.requestMethod = request.requestMethod.toString()
-
         headers.forEach {
             urlConnection.setRequestProperty(it.key, it.value)
         }
-
         urlConnection.doInput = true
         urlConnection.useCaches = false
         urlConnection.connectTimeout = request.connectTimeout
-
         urlConnection.connect()
 
         try {
@@ -155,16 +136,13 @@ class SseClient(val request: HttpRequest, val listener: SseListener) {
         catch (e: IOException) {
             e.printStackTrace()
         }
-
         return -99
     }
 
     fun reader() : String{
-
         val br = BufferedReader(InputStreamReader(urlConnection.getInputStream(), "UTF-8"))
         val sb = StringBuilder(5000)
         var line: String? = null
-
         try {
             while ({ line = br.readLine(); line }() != null && line!!.isNotBlank()) {
                 sb.append(line + "\n")
@@ -173,21 +151,22 @@ class SseClient(val request: HttpRequest, val listener: SseListener) {
         catch (e: IOException) {
             e.printStackTrace()
         }
-
         return sb.toString()
     }
 
     fun jsonParser(message: String): JSONObject{
-        val pattern = Pattern.compile("\\{(.*?)\\}")
-        val matcher = pattern.matcher(message)
-        val jsonObject = JSONObject("{}")
-        if (matcher.find()) {
-            if (matcher.group(1) != null) {
-                val json = matcher.group(1);
-                return JSONObject(json);
-            }
-        }
-        return jsonObject
+//        val pattern = Pattern.compile("\\{(.*?)\\}")
+//        val matcher = pattern.matcher(message)
+//        val jsonObject = JSONObject("{}")
+//        if (matcher.find()) {
+//            if (matcher.group(1) != null) {
+//                val json = matcher.group(1)
+//                return JSONObject(json)
+//            }
+//        }
+
+        val reader = JSONObject(message)
+        reader.let { return it }
     }
 
 }
