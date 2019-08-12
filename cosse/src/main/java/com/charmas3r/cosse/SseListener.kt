@@ -1,6 +1,4 @@
-package com.arlo.cosse
-
-import org.json.JSONObject
+package com.charmas3r.cosse
 
 interface SseListener {
 

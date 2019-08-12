@@ -1,4 +1,4 @@
-package com.arlo.cosse
+package com.charmas3r.cosse
 
 import androidx.test.InstrumentationRegistry
 import androidx.test.runner.AndroidJUnit4

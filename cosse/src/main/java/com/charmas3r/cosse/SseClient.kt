@@ -1,4 +1,4 @@
-package com.arlo.cosse
+package com.charmas3r.cosse
 
 /*
 Copyright 2019 Evan Smith
@@ -15,9 +15,7 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License. */
 
-import android.util.Log
 import kotlinx.coroutines.*
-import org.json.JSONObject
 import java.io.BufferedReader
 import java.io.IOException
 import java.io.InputStreamReader
@@ -26,7 +24,6 @@ import javax.net.ssl.HttpsURLConnection
 import java.net.URL
 import java.security.KeyManagementException
 import java.security.NoSuchAlgorithmException
-import java.util.regex.Pattern
 import javax.net.ssl.SSLException
 import kotlin.system.exitProcess
 

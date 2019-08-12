@@ -1,4 +1,4 @@
-package com.arlo.cosse
+package com.charmas3r.cosse
 
 class HttpResponse(val request: HttpRequest) {
 

@@ -1,11 +1,10 @@
-package com.arlo.sampleApp
+package com.charmas3r.sampleApp
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
-import com.arlo.cosse.*
+import com.charmas3r.cosse.*
 import kotlinx.android.synthetic.main.activity_main.*
-import org.json.JSONObject
 
 class MainActivity : AppCompatActivity() {
 
