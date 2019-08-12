@@ -103,7 +103,7 @@ SseClient test = new SseClient(request, new SseListener() {
     }
 
     @Override
-    public void onMessage(@NotNull String s, @NotNull JSONObject obj) {
+    public void onMessage(@NotNull String s) {
 
     }
 
