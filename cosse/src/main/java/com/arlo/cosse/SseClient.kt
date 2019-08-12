@@ -73,9 +73,8 @@ class SseClient(val request: HttpRequest, val listener: SseListener) {
                 }
                 while (connectionStatus) {
                     val message = GlobalScope.async { reader() }.await()
-                    val json = jsonParser(message)
                     launch(Dispatchers.Main) {
-                        listener.onMessage(message, json)
+                        listener.onMessage(removeMessageHeader(message))
                     }
                 }
                 if (!connectionStatus) {
@@ -159,18 +158,4 @@ class SseClient(val request: HttpRequest, val listener: SseListener) {
     fun removeMessageHeader(message: String): String{
         return message.replace("event: message\n", "")
     }
-
-    fun jsonParser(message: String): JSONObject{
-        val pattern = Pattern.compile("\\{(.*?)\\}")
-        val matcher = pattern.matcher(removeMessageHeader(message))
-        val jsonObject = JSONObject("{}")
-        if (matcher.find()) {
-            if (matcher.group(1) != null) {
-                val json = "{" + matcher.group(1) + "}"
-                return JSONObject(json)
-            }
-        }
-        return jsonObject
-    }
-
 }

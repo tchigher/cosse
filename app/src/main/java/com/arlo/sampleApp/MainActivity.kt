@@ -27,9 +27,8 @@ class MainActivity : AppCompatActivity() {
                 }
             }
 
-            override fun onMessage(line: String, obj: JSONObject) {
+            override fun onMessage(line: String) {
                 Log.i(TAG, line)
-                Log.i(TAG, obj.toString())
                 text_response.setText(line)
             }
 
