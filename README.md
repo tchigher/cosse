@@ -54,11 +54,14 @@ Assign the callback
 ```
 val test = SseClient(request, object : SseListener {
     override fun onOpen(response: HttpResponse) {
-        Log.i(TAG, response.headers)
+         response.headers.forEach {
+             Log.d(TAG, "Response Header: ${it.key}, Value: ${it.value}")
+         }
     }
 
-    override fun onMessage(line: String) {
-        Log.i(TAG, line)
+    override fun onMessage(line: String, obj: JSONObject) {
+        //if your SSE returns JSON the object will be passed back
+        text_response.setText(obj.toString())
     }
 
     override fun onTimeout() {
@@ -101,8 +104,8 @@ SseClient test = new SseClient(request, new SseListener() {
     }
 
     @Override
-    public void onMessage(@NotNull String s) {
-
+    public void onMessage(@NotNull String s, @NotNull JSONObject obj) {
+	//if JSON is not return obj will return empyty object "{}"
     }
 
     @Override
