@@ -59,9 +59,8 @@ val test = SseClient(request, object : SseListener {
          }
     }
 
-    override fun onMessage(line: String, obj: JSONObject) {
-        //if your SSE returns JSON the object will be passed back
-        text_response.setText(obj.toString())
+    override fun onMessage(line: String) {
+        text_response.setText(string)
     }
 
     override fun onTimeout() {
@@ -105,7 +104,7 @@ SseClient test = new SseClient(request, new SseListener() {
 
     @Override
     public void onMessage(@NotNull String s, @NotNull JSONObject obj) {
-	//if JSON is not return obj will return empyty object "{}"
+
     }
 
     @Override
