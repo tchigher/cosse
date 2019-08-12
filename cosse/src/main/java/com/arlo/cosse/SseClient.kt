@@ -15,6 +15,7 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License. */
 
+import android.util.Log
 import kotlinx.coroutines.*
 import org.json.JSONObject
 import java.io.BufferedReader
@@ -45,7 +46,6 @@ class SseClient(val request: HttpRequest, val listener: SseListener) {
             connectionStatus = false;
             urlConnection.setConnectTimeout(2);
             urlConnection.setReadTimeout(2);
-            urlConnection.disconnect();
             listener.onClose()
             exitProcess(1)
         }
@@ -101,7 +101,6 @@ class SseClient(val request: HttpRequest, val listener: SseListener) {
 //                Log.d(TAG, "Response Headers: ${it.key}, Value: ${it.value.iterator().next()}")
             }
         }
-
     }
 
     fun openChannel(): Int {
@@ -140,6 +139,9 @@ class SseClient(val request: HttpRequest, val listener: SseListener) {
     }
 
     fun reader() : String{
+        if (!connectionStatus) {
+            return "Connection disconnected"
+        }
         val br = BufferedReader(InputStreamReader(urlConnection.getInputStream(), "UTF-8"))
         val sb = StringBuilder(5000)
         var line: String? = null
@@ -154,19 +156,21 @@ class SseClient(val request: HttpRequest, val listener: SseListener) {
         return sb.toString()
     }
 
-    fun jsonParser(message: String): JSONObject{
-//        val pattern = Pattern.compile("\\{(.*?)\\}")
-//        val matcher = pattern.matcher(message)
-//        val jsonObject = JSONObject("{}")
-//        if (matcher.find()) {
-//            if (matcher.group(1) != null) {
-//                val json = matcher.group(1)
-//                return JSONObject(json)
-//            }
-//        }
+    fun removeMessageHeader(message: String): String{
+        return message.replace("event: message\n", "")
+    }
 
-        val reader = JSONObject(message)
-        reader.let { return it }
+    fun jsonParser(message: String): JSONObject{
+        val pattern = Pattern.compile("\\{(.*?)\\}")
+        val matcher = pattern.matcher(removeMessageHeader(message))
+        val jsonObject = JSONObject("{}")
+        if (matcher.find()) {
+            if (matcher.group(1) != null) {
+                val json = "{" + matcher.group(1) + "}"
+                return JSONObject(json)
+            }
+        }
+        return jsonObject
     }
 
 }
